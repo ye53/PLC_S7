@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>baseChange</class>
+ <widget class="QWidget" name="baseChange">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>316</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>进制转换</string>
+  </property>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>30</y>
+     <width>68</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>输入</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>30</y>
+     <width>68</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>输出</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="inputText">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>60</y>
+     <width>113</width>
+     <height>36</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="outputText">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>60</y>
+     <width>113</width>
+     <height>36</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="inputGroup">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>100</y>
+     <width>120</width>
+     <height>141</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string/>
+   </property>
+   <widget class="QRadioButton" name="hexI">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>110</y>
+      <width>117</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>十六进制</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="binI">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>117</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>二进制</string>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="octI">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>117</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>八进制</string>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="decI">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>80</y>
+      <width>117</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>十进制</string>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="outputGroup">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>100</y>
+     <width>120</width>
+     <height>141</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string/>
+   </property>
+   <widget class="QRadioButton" name="hexO">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>110</y>
+      <width>117</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>十六进制</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="binO">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>117</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>二进制</string>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="octO">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>117</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>八进制</string>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="decO">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>80</y>
+      <width>117</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>十进制</string>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="btnChange">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>250</y>
+     <width>107</width>
+     <height>39</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>转换</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
