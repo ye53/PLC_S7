@@ -11,6 +11,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->tableWidget->setColumnCount(4);
+    ui->tableWidget->setRowCount(10);
+    QStringList headerLabels = {"序列","输出口","对应灯","完成状态"};
+    ui->tableWidget->setHorizontalHeaderLabels(headerLabels);
+
     m_threadPool.setMaxThreadCount(4);
 
     setWindowIcon(QIcon(":/actions/stock_about.png"));
@@ -202,11 +207,6 @@ void MainWindow::Creatcurve()
 }
 
 
-void MainWindow::on_pushButton_14_clicked()
-{
-    sql->InsertTest();
-}
-
 void MainWindow::on_FW_run_clicked()
 {
     if(client->Connected())
@@ -280,14 +280,25 @@ void MainWindow::on_action_18_triggered()
 }
 
 
-void MainWindow::handleWorkFinished(int num, int state)
+void MainWindow::handleWorkFinished(int id,int num, int state)
 {
     QDateTime currentDateTime = QDateTime::currentDateTime();
+    if(state)
+        addItemContent(id,3,"Done");
     qDebug() << "Worker finished with number" << num << "and state" << state;
-
+//    buff_Q[num]=state;
+//    client->MBWrite(num + 5,1,&buff_Q[num]);
     qDebug() << "Current date and time is:" << currentDateTime.toString(Qt::ISODate);
 
 }
+
+void MainWindow::addItemContent(int row, int column, QString content)
+{
+    QTableWidgetItem *item = new QTableWidgetItem(content);
+    ui->tableWidget->setItem(row,column,item);
+}
+
+
 
 
 
@@ -297,10 +308,6 @@ void MainWindow::on_actionASCII_triggered()
     ui->show();
 }
 
-void MainWindow::on_pushButton_17_clicked()
-{
-
-}
 
 void MainWindow::on_put_list_clicked()
 {
@@ -317,10 +324,31 @@ void MainWindow::on_put_list_clicked()
     if(isNumeric)
     {
 
-//        for (int i = 0; i < list.size(); ++i) {
+        for (int i = 0; i < list.size(); ++i) {
 
-//            QChar ch = list.at(i);
-//            int num = ch.digitValue();
+            QChar ch = list.at(i);
+            int id = ch.digitValue();
+            QString out;
+            if(id <= 7 )
+                out = "Q0." + QString::number(id);
+            else
+                out = "Q1." + QString::number(id-8);
+            for(int x = 0;x < 3; x++)
+            {
+                switch (x) {
+                case 0:
+                    addItemContent(i,x,QString::number(id));
+                    break;
+                case 1:
+                    addItemContent(i,x,out);
+                    break;
+                case 2:
+                    addItemContent(i,x,"第" + QString::number(id) + "个灯" );
+                    break;
+                }
+            }
+        }
+
         if (list.isEmpty()) {
             return;
         }
@@ -328,7 +356,7 @@ void MainWindow::on_put_list_clicked()
         connect(timer, &QTimer::timeout, this, [=]() {
             QChar ch = list.at(index);
             int num = ch.digitValue();
-            MyWorker* worker = new MyWorker(num, this);
+            MyWorker* worker = new MyWorker(index,num, this);
             connect(worker, &MyWorker::workFinished, this, &MainWindow::handleWorkFinished);
             m_threadPool.start(worker);
             index++;
@@ -351,8 +379,6 @@ void MainWindow::on_put_list_clicked()
 
     }
 }
-
-
 
 
 

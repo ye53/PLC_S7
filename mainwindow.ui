@@ -146,76 +146,24 @@
      <rect>
       <x>200</x>
       <y>160</y>
-      <width>651</width>
-      <height>261</height>
+      <width>661</width>
+      <height>281</height>
      </rect>
     </property>
     <property name="title">
      <string>选定分选模式：</string>
     </property>
-    <widget class="QPushButton" name="pushButton_14">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>40</y>
-       <width>151</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>40mm以下，55g以下</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_17">
-     <property name="geometry">
-      <rect>
-       <x>230</x>
-       <y>40</y>
-       <width>151</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>40mm以下，55~75g</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_15">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>120</y>
-       <width>151</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>40~60mm，55g以下</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="put_list">
      <property name="geometry">
       <rect>
-       <x>480</x>
-       <y>110</y>
+       <x>450</x>
+       <y>30</y>
        <width>151</width>
        <height>41</height>
       </rect>
      </property>
      <property name="text">
       <string>输入序列</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_20">
-     <property name="geometry">
-      <rect>
-       <x>430</x>
-       <y>40</y>
-       <width>151</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>40mm以下，75g以上</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_2">
@@ -234,10 +182,33 @@
     <widget class="QLineEdit" name="lineEdit_3">
      <property name="geometry">
       <rect>
-       <x>230</x>
-       <y>110</y>
+       <x>220</x>
+       <y>30</y>
        <width>191</width>
        <height>41</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>30</y>
+       <width>141</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>请输入分选序列：</string>
+     </property>
+    </widget>
+    <widget class="QTableWidget" name="tableWidget">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>90</y>
+       <width>561</width>
+       <height>181</height>
       </rect>
      </property>
     </widget>
