@@ -86,6 +86,7 @@ private slots:
 
     void handleWorkFinished(int id,int num, int state);
 
+    void DeviationWatch();
 
 private:
     Ui::MainWindow *ui;
@@ -111,6 +112,11 @@ private:
 
     QThreadPool m_threadPool;
     int index=0;
+    int index_dw=0;
+    int deviation;
+
+    QTime starttime,stoptime;
+
 };
 
 
