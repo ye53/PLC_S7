@@ -1,7 +1,7 @@
 #include "myworker.h"
 #include <QThread>
 
-MyWorker::MyWorker(int num, QObject *parent) : QObject(parent), m_num(num)
+MyWorker::MyWorker(int id,int num, QObject *parent) : QObject(parent), m_id(id),m_num(num)
 {
 
 }
@@ -20,9 +20,9 @@ void MyWorker::run()
 
     // 定时器超时后发送信号
     QThread::msleep(2000 + m_num * 2000);
-    emit workFinished(m_num, 1);
+    emit workFinished(m_id,m_num, 1);
     QThread::msleep(1000);
-    emit workFinished(m_num, 0);
+    emit workFinished(m_id,m_num, 0);
 }
 
 

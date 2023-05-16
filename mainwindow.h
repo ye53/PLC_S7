@@ -12,6 +12,7 @@
 #include <QThread>
 #include <QQueue>
 #include <QMutex>
+#include <QTableWidget>
 #include "login.h"
 #include <QSystemTrayIcon>
 #include "sqlite.h"
@@ -45,17 +46,6 @@ public:
     QAction *tray_exit;
     QMenu *trayIconMenu;
 
-    void executeFunction(int num);
-    void Output0();
-    void Output1();
-    void Output2();
-    void Output3();
-    void Output4();
-    void Output5();
-    void Output6();
-    void Output7();
-    void Output8();
-    void Output9();
 
 private slots:
     void on_connect_clicked();
@@ -76,8 +66,6 @@ private slots:
 
     void Creatcurve();
 
-    void on_pushButton_14_clicked();
-
     void on_FW_run_clicked();
 
     void on_stop_clicked();
@@ -94,11 +82,9 @@ private slots:
 
     void on_actionASCII_triggered();
 
-    void on_pushButton_17_clicked();
-
     void on_put_list_clicked();
 
-    void handleWorkFinished(int num, int state);
+    void handleWorkFinished(int id,int num, int state);
 
 
 private:
@@ -121,8 +107,10 @@ private:
     /* 用来记录数据点数 */
     int pointCount = 0;
 
+    void addItemContent(int row,int column,QString content);
+
     QThreadPool m_threadPool;
-            int index=0;
+    int index=0;
 };
 
 

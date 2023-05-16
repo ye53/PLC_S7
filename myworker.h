@@ -10,17 +10,17 @@ class MyWorker : public QObject,public QRunnable
 {
     Q_OBJECT
 public:
-    explicit MyWorker(int num, QObject *parent = nullptr);
+    explicit MyWorker(int id,int num, QObject *parent = nullptr);
 
 signals:
-    void workFinished(int num, int state);
+    void workFinished(int id,int num, int state);
 
 protected:
     void run() override;
 
 private:
+    int m_id;
     int m_num;
-
 
 };
 
