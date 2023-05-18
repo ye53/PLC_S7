@@ -26,7 +26,5 @@
         <file>actions/text_bold.png</file>
         <file>actions/text_italic.png</file>
         <file>actions/text_under.png</file>
-        <file>../../Desktop/1.png</file>
-        <file>../../Desktop/2.png</file>
     </qresource>
 </RCC>
