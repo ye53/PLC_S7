@@ -19,7 +19,7 @@
 #include "myworker.h"
 
 QT_BEGIN_NAMESPACE
-//using namespace QtCharts;
+using namespace QtCharts;
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 class MainWindow : public QMainWindow
@@ -53,8 +53,6 @@ private slots:
     void on_disconnect_clicked();
 
     void on_pushButton_3_clicked();
-
-    void on_action1_triggered();
 
     void slotBtnClear();
 

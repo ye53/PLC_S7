@@ -4,13 +4,10 @@
 #include <QDebug>
 #include "basechange.h"
 #include "login.h"
-#include "rpmmeasurewidget.h"
-#include <QHBoxLayout>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , m_threadPool(this)
-
 {
     ui->setupUi(this);
 
@@ -22,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_threadPool.setMaxThreadCount(4);
 
     setWindowIcon(QIcon(":/actions/stock_about.png"));
+
 
 
     sql->CreateTable();
@@ -310,14 +308,6 @@ void MainWindow::on_actionASCII_triggered()
     ui->show();
 }
 
-
-
-
-void MainWindow::on_action1_triggered()
-{
-    RpmMeasureWidget *ui = new RpmMeasureWidget();
-    ui->show();
-}
 
 void MainWindow::on_put_list_clicked()
 {
