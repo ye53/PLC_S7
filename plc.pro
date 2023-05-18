@@ -14,6 +14,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     myworker.cpp \
+    rpmmeasurewidget.cpp \
     snap7.cpp \
     sqlite.cpp
 
@@ -22,13 +23,15 @@ HEADERS += \
     login.h \
     mainwindow.h \
     myworker.h \
+    rpmmeasurewidget.h \
     snap7.h \
     sqlite.h
 
 FORMS += \
     basechange.ui \
     login.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    rpmmeasurewidget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
