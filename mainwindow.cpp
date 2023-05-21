@@ -120,11 +120,8 @@ void MainWindow::slotBtnStartAndStop()
 
 void MainWindow::slotTimeout()
 {
-    byte value[10];
-    buff_M[0] = (byte)(0xff & 1);
-    client->MBWrite(2,1,&buff_M[0]);
-    client->DBRead(1,300,2,&value);
-    freq= (value[0]<<8) + value[1];
+    freq = readfreq();
+    speed = readspeed();
     //value[1] = (byte)((0xff00 & i) >> 8);
     qDebug()<<freq;
     if(pointCount > AXIS_MAX_X)
@@ -135,9 +132,10 @@ void MainWindow::slotTimeout()
     }
         m_chart->axisY()->setMin(0);
         m_chart->axisY()->setMax(50);                    // 更新X轴范围
-    m_lineSeries->append(QPointF(pointCount, freq / 100));
+    m_lineSeries->append(QPointF(pointCount, freq));
     pointCount++;
     sql->InsertFrequencyTable(freq/100);
+    sql->InsertInverterTable(run_status,speed);
 }
 
 void MainWindow::activatedSystemIcon(QSystemTrayIcon::ActivationReason reason)
@@ -215,9 +213,12 @@ void MainWindow::on_FW_run_clicked()
     {
         buff_M[0] = (byte)(0xff & 2);
         buff_V[0] = (byte)(0xff & 1);
+        mutex.lock();
         client->DBWrite(1,305,1,&buff_V[0]);
         client->MBWrite(2,1,&buff_M[0]);
-        sql->InsertMotorTable("正转运行");
+        mutex.unlock();
+        run_status = "正转运行";
+        sql->InsertMotorTable(run_status);
     }
 }
 
@@ -227,9 +228,12 @@ void MainWindow::on_stop_clicked()
     {
         buff_M[0] = (byte)(0xff & 8);
         buff_V[0] = (byte)(0xff & 5);
+        mutex.lock();
         client->DBWrite(1,305,1,&buff_V[0]);
         client->MBWrite(2,1,&buff_M[0]);
-        sql->InsertMotorTable("停止");
+        mutex.unlock();
+        run_status = "停止";
+        sql->InsertMotorTable(run_status);
     }
 }
 
@@ -239,9 +243,12 @@ void MainWindow::on_RW_run_clicked()
     {
         buff_M[0] = (byte)(0xff & 4);
         buff_V[0] = (byte)(0xff & 2);
+        mutex.lock();
         client->DBWrite(1,305,1,&buff_V[0]);
         client->MBWrite(2,1,&buff_M[0]);
-        sql->InsertMotorTable("反转运行");
+        mutex.unlock();
+        run_status = "反转运行";
+        sql->InsertMotorTable(run_status);
     }
 }
 
@@ -301,8 +308,38 @@ void MainWindow::addItemContent(int row, int column, QString content)
 }
 
 
+ushort MainWindow::readfreq()
+{
+    mutex.lock();
+    byte value[10];
+    buff_M[0] = (byte)(0xff & 1);
+    client->MBWrite(2,1,&buff_M[0]);
+    client->DBRead(1,300,2,&value);
+    mutex.unlock();
+    freq = (value[0]<<8) + value[1];
+    return  freq/100;
+}
 
+int MainWindow::readspeed()
+{
+    mutex.lock();
+    byte value[10];
+    buff_M[1] = (byte)(0xff & 32);
+    client->MBWrite(2,1,&buff_M[1]);
+    client->DBRead(1,320,2,&value);
+    mutex.unlock();
+    int speed = (value[0]<<8) + value[1];
+    return speed;
+}
 
+void MainWindow::HandleSteady(bool status_rpm)
+{
+    if(status_rpm)
+        isteady = 1;
+    else
+        isteady = 0;
+
+}
 
 void MainWindow::on_actionASCII_triggered()
 {
@@ -310,17 +347,44 @@ void MainWindow::on_actionASCII_triggered()
     ui->show();
 }
 
+void MainWindow::DeviationWatch()
+{
 
+    client->MBRead(4,1,&buff_M[4]);
+    QTimer* timer = new QTimer(this);
+    timer->start(100);
+    connect(timer, &QTimer::timeout, this, [=]() {
+        client->MBRead(4,1,&buff_M[4]);
+        if(buff_M[4] == 1 && index_dw == 0 )
+        {
+            starttime = QTime::currentTime();
+            index_dw++;
+        }
+        client->MBRead(5,1,&buff_M[5]);
+        if(buff_M[5] != 0)
+        {
+            stoptime = QTime::currentTime();
+            deviation = starttime.msecsTo(stoptime);
+            qDebug()<<"误差是"<<deviation;
+            starttime = stoptime;
+            Sleep(200);
+        }
+        timer->start(100);
+    });
+
+}
 
 
 void MainWindow::on_action1_triggered()
 {
-    RpmMeasureWidget *ui = new RpmMeasureWidget();
-    ui->show();
+    RpmMeasureWidget *rpm = new RpmMeasureWidget();
+    connect(rpm,&RpmMeasureWidget::steady,this,&MainWindow::HandleSteady);
+    rpm->show();
 }
 
 void MainWindow::on_put_list_clicked()
 {
+    if(isteady){
     QString list = ui->lineEdit_3->text();
 
     bool isNumeric=true;
@@ -372,6 +436,7 @@ void MainWindow::on_put_list_clicked()
             index++;
             if(index >= list.size())
             {
+                sql->InsertSortTable(list);
                 timer->stop();
                 timer->deleteLater();
                 index = 0;
@@ -386,8 +451,10 @@ void MainWindow::on_put_list_clicked()
 //            connect(worker, &MyWorker::workFinished, this, &MainWindow::handleWorkFinished);
 //            m_threadPool.start(worker);
 
-
     }
+    }
+    else
+        QMessageBox::about(this,"提示","请等待传送带稳定运行");
 }
 
 

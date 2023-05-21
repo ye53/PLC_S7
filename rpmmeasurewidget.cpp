@@ -105,6 +105,7 @@ void RpmMeasureWidget::measure()
         // 显示转速稳定
         if (m_speeds.size() == 5 && error < 10) {
             m_labelStable->setText("转速稳定");
+            emit steady(1);
             m_timer->stop();
 
             // 隐藏速度列表和稳定标签

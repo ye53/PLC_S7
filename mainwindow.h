@@ -19,7 +19,7 @@
 #include "myworker.h"
 
 QT_BEGIN_NAMESPACE
-//using namespace QtCharts;
+using namespace QtCharts;
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 class MainWindow : public QMainWindow
@@ -34,6 +34,7 @@ public:
     byte buff_V[10] = {0};
     byte buff_Q[10] = {0};
     ushort freq;
+    int speed;
     QChart* chart ;
     QLineSeries *series;
     quint32 counter;
@@ -88,7 +89,15 @@ private slots:
 
     void handleWorkFinished(int id,int num, int state);
 
+    void DeviationWatch();
 
+    void HandleSteady(bool status_rpm);
+
+    ushort readfreq();
+
+    int readspeed();
+signals:
+    void listComplete();
 private:
     Ui::MainWindow *ui;
     /* 用于模拟生成实时数据的定时器 */
@@ -113,6 +122,12 @@ private:
 
     QThreadPool m_threadPool;
     int index=0;
+    QMutex mutex;
+    QString run_status;
+    bool isteady;
+    int index_dw =0;
+    int deviation;
+    QTime starttime,stoptime;
 };
 
 
