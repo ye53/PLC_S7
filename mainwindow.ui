@@ -282,7 +282,7 @@
      <x>0</x>
      <y>0</y>
      <width>979</width>
-     <height>24</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -300,7 +300,7 @@
     </property>
     <addaction name="actionASCII"/>
     <addaction name="action_4"/>
-    <addaction name="action1"/>
+    <addaction name="action_3"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -424,9 +424,9 @@
     <string>最小化</string>
    </property>
   </action>
-  <action name="action1">
+  <action name="action_3">
    <property name="text">
-    <string>一个简单的界面</string>
+    <string>电机转速</string>
    </property>
   </action>
  </widget>

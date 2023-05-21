@@ -17,6 +17,7 @@
 #include <QSystemTrayIcon>
 #include "sqlite.h"
 #include "myworker.h"
+#include "rpmmeasurewidget.h"
 
 QT_BEGIN_NAMESPACE
 using namespace QtCharts;
@@ -54,8 +55,6 @@ private slots:
     void on_disconnect_clicked();
 
     void on_pushButton_3_clicked();
-
-    void on_action1_triggered();
 
     void slotBtnClear();
 
@@ -96,6 +95,8 @@ private slots:
     ushort readfreq();
 
     int readspeed();
+    void on_action_3_triggered();
+
 signals:
     void listComplete();
 private:
@@ -122,12 +123,14 @@ private:
 
     QThreadPool m_threadPool;
     int index=0;
+
     QMutex mutex;
     QString run_status;
     bool isteady;
     int index_dw =0;
     int deviation;
     QTime starttime,stoptime;
+
 };
 
 

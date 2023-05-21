@@ -4,13 +4,10 @@
 #include <QDebug>
 #include "basechange.h"
 #include "login.h"
-#include "rpmmeasurewidget.h"
-#include <QHBoxLayout>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , m_threadPool(this)
-
 {
     ui->setupUi(this);
 
@@ -20,8 +17,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableWidget->setHorizontalHeaderLabels(headerLabels);
 
     m_threadPool.setMaxThreadCount(4);
-
+    DeviationWatch();
     setWindowIcon(QIcon(":/actions/stock_about.png"));
+
 
 
     sql->CreateTable();
@@ -295,9 +293,36 @@ void MainWindow::handleWorkFinished(int id,int num, int state)
     if(state)
         addItemContent(id,3,"Done");
     qDebug() << "Worker finished with number" << num << "and state" << state;
-//    buff_Q[num]=state;
-//    client->MBWrite(num + 5,1,&buff_Q[num]);
+    buff_Q[num]=state;
+    client->MBWrite(num + 6,1,&buff_Q[num]);
     qDebug() << "Current date and time is:" << currentDateTime.toString(Qt::ISODate);
+
+}
+
+void MainWindow::DeviationWatch()
+{
+
+    client->MBRead(4,1,&buff_M[4]);
+    QTimer* timer = new QTimer(this);
+    timer->start(100);
+    connect(timer, &QTimer::timeout, this, [=]() {
+        client->MBRead(4,1,&buff_M[4]);
+        if(buff_M[4] == 1 && index_dw == 0 )
+        {
+            starttime = QTime::currentTime();
+            index_dw++;
+        }
+        client->MBRead(5,1,&buff_M[5]);
+        if(buff_M[5] != 0)
+        {
+            stoptime = QTime::currentTime();
+            deviation = starttime.msecsTo(stoptime);
+            qDebug()<<"误差是"<<deviation;
+            starttime = stoptime;
+            Sleep(200);
+        }
+        timer->start(100);
+    });
 
 }
 
@@ -347,40 +372,7 @@ void MainWindow::on_actionASCII_triggered()
     ui->show();
 }
 
-void MainWindow::DeviationWatch()
-{
 
-    client->MBRead(4,1,&buff_M[4]);
-    QTimer* timer = new QTimer(this);
-    timer->start(100);
-    connect(timer, &QTimer::timeout, this, [=]() {
-        client->MBRead(4,1,&buff_M[4]);
-        if(buff_M[4] == 1 && index_dw == 0 )
-        {
-            starttime = QTime::currentTime();
-            index_dw++;
-        }
-        client->MBRead(5,1,&buff_M[5]);
-        if(buff_M[5] != 0)
-        {
-            stoptime = QTime::currentTime();
-            deviation = starttime.msecsTo(stoptime);
-            qDebug()<<"误差是"<<deviation;
-            starttime = stoptime;
-            Sleep(200);
-        }
-        timer->start(100);
-    });
-
-}
-
-
-void MainWindow::on_action1_triggered()
-{
-    RpmMeasureWidget *rpm = new RpmMeasureWidget();
-    connect(rpm,&RpmMeasureWidget::steady,this,&MainWindow::HandleSteady);
-    rpm->show();
-}
 
 void MainWindow::on_put_list_clicked()
 {
@@ -460,8 +452,9 @@ void MainWindow::on_put_list_clicked()
 
 
 
-
-
-
-
-
+void MainWindow::on_action_3_triggered()
+{
+    RpmMeasureWidget *rpm = new RpmMeasureWidget();
+    connect(rpm,&RpmMeasureWidget::steady,this,&MainWindow::HandleSteady);
+    rpm->show();
+}
