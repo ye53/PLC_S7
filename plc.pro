@@ -30,8 +30,7 @@ HEADERS += \
 FORMS += \
     basechange.ui \
     login.ui \
-    mainwindow.ui \
-    rpmmeasurewidget.ui
+    mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

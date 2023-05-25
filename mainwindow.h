@@ -17,6 +17,7 @@
 #include <QSystemTrayIcon>
 #include "sqlite.h"
 #include "myworker.h"
+#include "rpmmeasurewidget.h"
 
 QT_BEGIN_NAMESPACE
 //using namespace QtCharts;
@@ -34,6 +35,7 @@ public:
     byte buff_V[10] = {0};
     byte buff_Q[10] = {0};
     ushort freq;
+    int speed;
     QChart* chart ;
     QLineSeries *series;
     quint32 counter;
@@ -46,6 +48,9 @@ public:
     QAction *tray_exit;
     QMenu *trayIconMenu;
 
+    // 添加槽函数声明
+public slots:
+    void handleSteady(bool status);
 
 private slots:
     void on_connect_clicked();
@@ -53,8 +58,6 @@ private slots:
     void on_disconnect_clicked();
 
     void on_pushButton_3_clicked();
-
-    void on_action1_triggered();
 
     void slotBtnClear();
 
@@ -88,7 +91,17 @@ private slots:
 
     void handleWorkFinished(int id,int num, int state);
 
+    void DeviationWatch();
 
+    void HandleSteady(bool status_rpm);
+
+    ushort readfreq();
+
+    int readspeed();
+    void on_action_3_triggered();
+
+signals:
+    void listComplete();
 private:
     Ui::MainWindow *ui;
     /* 用于模拟生成实时数据的定时器 */
@@ -113,6 +126,14 @@ private:
 
     QThreadPool m_threadPool;
     int index=0;
+
+    QMutex mutex;
+    QString run_status;
+    bool isteady;
+    int index_dw =0;
+    int deviation;
+    QTime starttime,stoptime;
+
 };
 
 
