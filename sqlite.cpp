@@ -81,12 +81,12 @@ void sqlite::InsertIpTable(QString ip)
     query.exec(QString(R"(INSERT INTO IP_address(id,address,data_update) VALUES(NULL,'%1','%2');)").arg(ip).arg(dataTime));
 }
 
-void sqlite::InsertInverterTable(QString status, float speed)
+void sqlite::InsertInverterTable(QString status, int speed)
 {
     QSqlQuery query;
     QString data = QString("%1").arg(speed);
     QString dataTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
-    query.exec(QString(R"(INSERT INTO Inver_running_status(id,status,speed,data_update) VALUES(NULL,'%1','%2','%3');)").arg(status).arg(data).arg(dataTime));
+    query.exec(QString(R"(INSERT INTO Inverter_running_status(id,status,speed,data_update) VALUES(NULL,'%1','%2','%3');)").arg(status).arg(data).arg(dataTime));
 }
 
 void sqlite::InsertFrequencyTable(float freq)

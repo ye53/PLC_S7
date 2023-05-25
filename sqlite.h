@@ -17,7 +17,7 @@ public:
     void CreateTable();
     void InsertMotorTable(QString status);
     void InsertIpTable(QString ip);
-    void InsertInverterTable(QString status,float speed);
+    void InsertInverterTable(QString status,int speed);
     void InsertFrequencyTable(float freq);
     void InsertSortTable(QString mod);
     void InsertTest();

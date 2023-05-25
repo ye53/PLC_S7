@@ -17,7 +17,10 @@ class RpmMeasureWidget : public QWidget
 public:
     explicit RpmMeasureWidget(QWidget *parent = nullptr);
 signals:
-    void steady(bool status_rpm = 0);
+
+    void steady(bool status_rpm = false);
+    void handleSteady(bool status);  // 声明新的信号
+
 
 private:
     QLabel *m_labelCurrentSpeed;
@@ -26,13 +29,16 @@ private:
     QTextEdit *m_textEditSpeeds;
     QLabel *m_labelStable;
     QPushButton *m_btnStart;
-    QPushButton *m_btnEnd; // 新增
+    QPushButton *m_btnEnd;
     QTimer *m_timer;
     QList<double> m_speeds;
 
     void startMeasure();
     void measure();
-    void endMeasure(); // 新增
+    void endMeasure();
+
+    void calculateStandardDeviation(); // 新增函数声明
 };
 
 #endif // RPMMESUREWIDGET_H
+

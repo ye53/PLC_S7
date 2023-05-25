@@ -6,6 +6,7 @@
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QTimer>
+#include <cmath>
 
 RpmMeasureWidget::RpmMeasureWidget(QWidget *parent) : QWidget(parent)
 {
@@ -65,55 +66,55 @@ void RpmMeasureWidget::measure()
 
     // 读取最新的转速数据
     QSqlQuery query;
-    query.exec("SELECT speed FROM speed ORDER BY id DESC LIMIT 1");
+    query.exec("SELECT speed, data_update FROM Inverter_running_status ORDER BY id DESC LIMIT 5");
 
-    if (query.next()) {
+    QList<double> speeds;
+    QDateTime lastUpdateTime;
+    while (query.next()) {
         // 添加到速度列表中
         double speed = query.value(0).toDouble();
-        m_speeds.prepend(speed);
-        if (m_speeds.size() > 5) {
-            m_speeds.removeLast();
-        }
-
-        // 计算平均值和误差
-        double average = 0;
-        for (double speed : m_speeds) {
-            average += speed;
-        }
-        average /= m_speeds.size();
-
-        // 如果平均值大于基础转速的10%，则调整转速
-        if (average > baseSpeed * 1.1) {
-            // 执行调速操作
-        }
-
-        double error = 0;
-        for (double speed : m_speeds) {
-            error += qAbs(speed - average) / average;
-        }
-        error *= 100 / m_speeds.size();
-
-        // 显示当前转速
-        m_labelCurrentSpeed->setText(QString::number(speed));
-
-        // 显示最新5次转速
-        m_textEditSpeeds->clear();
-        for (double speed : m_speeds) {
-            m_textEditSpeeds->append(QString::number(speed));
-        }
-
-        // 显示转速稳定
-        if (m_speeds.size() == 5 && error < 10) {
-            m_labelStable->setText("转速稳定");
-            emit steady(1);
-            m_timer->stop();
-
-            // 隐藏速度列表和稳定标签
-            m_textEditSpeeds->setVisible(false);
-            m_labelStable->setVisible(false);
+        speeds.append(speed);
+        QString updateTime = query.value(1).toString();
+        m_textEditSpeeds->append(QString("转速：%1，时间：%2").arg(speed).arg(updateTime));
+        if (lastUpdateTime.isNull()) {
+            lastUpdateTime = QDateTime::fromString(updateTime, "yyyy-MM-dd hh:mm:ss");
         }
     }
+
+    // 计算标准差
+    double sum = 0;
+    for (double speed : speeds) {
+        sum += speed;
+    }
+    double mean = sum / speeds.size();
+
+    double squaredDiffSum = 0;
+    for (double speed : speeds) {
+        squaredDiffSum += std::pow(speed - mean, 2);
+    }
+    double variance = squaredDiffSum / speeds.size();
+    double standardDeviation = std::sqrt(variance);
+
+    // 判断转速稳定性
+    if (standardDeviation < 0.1 * mean) {
+        m_labelStable->setText("转速稳定");
+        emit handleSteady(true);
+    } else {
+        m_labelStable->setText("转速异常");
+    }
+
+
+    // 显示当前转速
+    m_labelCurrentSpeed->setText(QString::number(speeds.first()));
+
+
+    // 清空速度列表
+    m_textEditSpeeds->clear();
+    for (double speed : speeds) {
+        m_textEditSpeeds->append(QString::number(speed));
+    }
 }
+
 
 void RpmMeasureWidget::endMeasure()
 {

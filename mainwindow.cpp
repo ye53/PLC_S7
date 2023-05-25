@@ -4,6 +4,7 @@
 #include <QDebug>
 #include "basechange.h"
 #include "login.h"
+#include "rpmmeasurewidget.h"
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -19,7 +20,9 @@ MainWindow::MainWindow(QWidget *parent)
     m_threadPool.setMaxThreadCount(4);
     DeviationWatch();
     setWindowIcon(QIcon(":/actions/stock_about.png"));
-
+    RpmMeasureWidget *rpmMeasureWidget = new RpmMeasureWidget(this);
+    // 连接信号和槽函数
+    connect(rpmMeasureWidget, &RpmMeasureWidget::steady, this, &MainWindow::handleSteady);
 
 
     sql->CreateTable();
@@ -119,9 +122,10 @@ void MainWindow::slotBtnStartAndStop()
 void MainWindow::slotTimeout()
 {
     freq = readfreq();
+//    speed = readspeed();
     speed = readspeed();
     //value[1] = (byte)((0xff00 & i) >> 8);
-    qDebug()<<freq;
+    qDebug()<<freq<<speed<<run_status;
     if(pointCount > AXIS_MAX_X)
     {
         m_lineSeries->remove(0);
@@ -335,6 +339,7 @@ void MainWindow::addItemContent(int row, int column, QString content)
 
 ushort MainWindow::readfreq()
 {
+
     mutex.lock();
     byte value[10];
     buff_M[0] = (byte)(0xff & 1);
@@ -366,12 +371,24 @@ void MainWindow::HandleSteady(bool status_rpm)
 
 }
 
-void MainWindow::on_actionASCII_triggered()
+int MainWindow::readspeed()
 {
-    Login *ui = new Login();
-    ui->show();
+
+    byte value[10];
+    buff_M[1] = (byte)(0xff & 32);
+    client->MBWrite(2,1,&buff_M[1]);
+    client->DBRead(1,320,2,&value);
+
+    int speed = (value[0]<<8) + value[1];
+    return speed;
 }
 
+void MainWindow::HandleSteady(bool status_rpm)
+{
+    if(status_rpm)
+        isteady = 1;
+    else
+        isteady = 0;
 
 
 void MainWindow::on_put_list_clicked()
@@ -458,3 +475,11 @@ void MainWindow::on_action_3_triggered()
     connect(rpm,&RpmMeasureWidget::steady,this,&MainWindow::HandleSteady);
     rpm->show();
 }
+void MainWindow::handleSteady(bool status)
+{
+    if (status) {
+        // 收到值为 true，表示转速稳定
+        // 在这里处理相应的逻辑
+    }
+}
+

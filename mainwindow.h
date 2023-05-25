@@ -48,6 +48,9 @@ public:
     QAction *tray_exit;
     QMenu *trayIconMenu;
 
+    // 添加槽函数声明
+public slots:
+    void handleSteady(bool status);
 
 private slots:
     void on_connect_clicked();
