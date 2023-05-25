@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     // 连接信号和槽函数
     connect(rpmMeasureWidget, &RpmMeasureWidget::steady, this, &MainWindow::handleSteady);
 
+
     sql->CreateTable();
     CreatSystemTray();
     Creatcurve();
@@ -122,6 +123,7 @@ void MainWindow::slotTimeout()
 {
     freq = readfreq();
 //    speed = readspeed();
+    speed = readspeed();
     //value[1] = (byte)((0xff00 & i) >> 8);
     qDebug()<<freq<<speed<<run_status;
     if(pointCount > AXIS_MAX_X)
@@ -134,7 +136,7 @@ void MainWindow::slotTimeout()
         m_chart->axisY()->setMax(50);                    // 更新X轴范围
     m_lineSeries->append(QPointF(pointCount, freq));
     pointCount++;
-    sql->InsertFrequencyTable(freq);
+    sql->InsertFrequencyTable(freq/100);
     sql->InsertInverterTable(run_status,speed);
 }
 
@@ -338,16 +340,35 @@ void MainWindow::addItemContent(int row, int column, QString content)
 ushort MainWindow::readfreq()
 {
 
+    mutex.lock();
     byte value[10];
     buff_M[0] = (byte)(0xff & 1);
     client->MBWrite(2,1,&buff_M[0]);
     client->DBRead(1,300,2,&value);
+    mutex.unlock();
     freq = (value[0]<<8) + value[1];
-
-    client->DBRead(1,320,2,&value);
-    speed = (value[0]<<8) + value[1];
-    speed = (65535 - speed) * 600 / 1024;
     return  freq/100;
+}
+
+int MainWindow::readspeed()
+{
+    mutex.lock();
+    byte value[10];
+    buff_M[1] = (byte)(0xff & 32);
+    client->MBWrite(2,1,&buff_M[1]);
+    client->DBRead(1,320,2,&value);
+    mutex.unlock();
+    int speed = (value[0]<<8) + value[1];
+    return speed;
+}
+
+void MainWindow::HandleSteady(bool status_rpm)
+{
+    if(status_rpm)
+        isteady = 1;
+    else
+        isteady = 0;
+
 }
 
 int MainWindow::readspeed()
@@ -368,15 +389,6 @@ void MainWindow::HandleSteady(bool status_rpm)
         isteady = 1;
     else
         isteady = 0;
-
-}
-
-void MainWindow::on_actionASCII_triggered()
-{
-    Login *ui = new Login();
-    ui->show();
-}
-
 
 
 void MainWindow::on_put_list_clicked()
@@ -470,3 +482,4 @@ void MainWindow::handleSteady(bool status)
         // 在这里处理相应的逻辑
     }
 }
+

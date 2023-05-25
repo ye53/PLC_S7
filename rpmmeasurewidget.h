@@ -17,8 +17,10 @@ class RpmMeasureWidget : public QWidget
 public:
     explicit RpmMeasureWidget(QWidget *parent = nullptr);
 signals:
+
     void steady(bool status_rpm = false);
     void handleSteady(bool status);  // 声明新的信号
+
 
 private:
     QLabel *m_labelCurrentSpeed;

@@ -103,8 +103,10 @@ void RpmMeasureWidget::measure()
         m_labelStable->setText("转速异常");
     }
 
+
     // 显示当前转速
     m_labelCurrentSpeed->setText(QString::number(speeds.first()));
+
 
     // 清空速度列表
     m_textEditSpeeds->clear();

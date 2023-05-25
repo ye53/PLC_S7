@@ -20,7 +20,7 @@
 #include "rpmmeasurewidget.h"
 
 QT_BEGIN_NAMESPACE
-//using namespace QtCharts;
+using namespace QtCharts;
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 class MainWindow : public QMainWindow
